@@ -3,9 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>To do project</title>
 </head>
 <body>
-    
+
+    <div class="nav">
+        <h1>Navigation</h1>
+        <div id="createlist">+ Create list</div>
+
+        <dialog closedby="any" id="toDoListDialog">
+            <form method="dialog">
+                <label for="listname">What name do you want for your todo list?</label>
+                <input type="text" id="listname" name="listname" oninput="this.form.elements.confirm.value=this.value;">
+                <button value="cancel">Cancel</button>
+                <button id="confirm" value="confirm">Submit</button>
+            </form>
+        </dialog>
+    </div>
+
+    <div class="content">
+        <h1>Content</h1>
+        <div class="container"></div>
+    </div>
+
 </body>
 </html>
