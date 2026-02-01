@@ -6,6 +6,8 @@ function createToDo(title, description, duedate, priority, notes){
     return { uuid, title, description, duedate, priority, notes, status }
 }
 
+globalThis.createToDo = createToDo;
+
 function addToList(todo, listName){
     listName.push(todo);
     return

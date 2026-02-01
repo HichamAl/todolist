@@ -1,7 +1,7 @@
-import {createToDo, addToList, deleteToDo, editToDo, markAsComplete} from "./toDoObject";
+import {createToDo, addToList} from "./toDoObject";
 import {createList} from "./createList";
 import  "./style.css";
-import {addListToDom, addObjectToDom} from "./addToDom";
+import {addListToDom} from "./addToDom";
 
 const arrayStorage = [];
 const defaultList = ["Default list"];
@@ -20,22 +20,57 @@ createListButton.addEventListener("click", () => {
     return
 })
 
+const createToDoButton = document.querySelector(".createToDo");
+const toDoDialog = document.querySelector("#createToDo");
+
+createToDoButton.addEventListener("click", ()=> {
+    const lists = document.querySelector("#lists");
+    while (lists.firstChild){
+        lists.removeChild(lists.firstChild);
+    }
+    arrayStorage.forEach(element => {
+    const option = document.createElement("option");
+    option.textContent = element[0];
+    option.setAttribute("value", element[0]);
+    lists.append(option);
+    });
+    toDoDialog.show();
+})
+
+const priority = document.querySelector("#priority");
+const title = document.querySelector("#title");
+const description = document.querySelector("#description");
+const notes = document.querySelector("#notes");
+const duedate = document.querySelector("#duedate");
+const chosenList = document.querySelector("#lists");
+
+const confirmButton = document.querySelector("#confirm");
+confirmButton.addEventListener("click", ()=> {
+    const todo = createToDo(title.value, description.value, duedate.value, priority.value, notes.value);
+    const rightList = arrayStorage.map((element) => element[0]).indexOf(chosenList.value);
+    addToList(todo, arrayStorage[rightList]);
+    title.value = "";
+    description.value = "";
+    duedate.value = "";
+    priority.value = "";
+    notes.value = "";
+    toDoDialog.close();
+})
+
 toDoListDialog.addEventListener("close", function (event){
     if (toDoListDialog.returnValue === "cancel"){
         return;
     } else {
         const name = toDoListDialog.returnValue;
-        createList(name);
+        const checkDuplicateName = arrayStorage.map((element) => element[0]).indexOf(name);
+        if (checkDuplicateName === -1) {
+            createList(name);
+            const listNameDialog = document.querySelector("#listname");
+            listNameDialog.value = "";
+        } else {
+            console.log("duplicate name not allowed");
+        }
     }
 })
 
-const todo = createToDo("Finish To Do List project", "The to do list project has been on hold for some time. I need to finish it soon.", "22-01-2026", "High", "Don't rush though, try to write pseudo code first..");
-addToList(todo, defaultList);
-addObjectToDom(defaultList);
 
-const todo1 = createToDo("Finish To Do List project", "The to do list project has been on hold for some time. I need to finish it soon.", "22-01-2026", "High", "Don't rush though, try to write pseudo code first..");
-const todo2 = createToDo("Finish To Do List project", "The to do list project has been on hold for some time. I need to finish it soon.", "22-01-2026", "High", "Don't rush though, try to write pseudo code first..");
-
-editToDo(todo2, "New title", "New description", "New due date", "New priority", "New Notes","not complete");
-
-markAsComplete(todo2);
