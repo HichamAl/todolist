@@ -105,6 +105,7 @@ function addObjectToDom(element, rightArrayMaybe){
         const rightArray = arrayStorage.map((element) => element[0]).indexOf(listNameToDo);
         const rightElement = arrayStorage[rightArray].find((e)=> e.uuid == uuid);
         globalThis.rightElement = rightElement;
+        globalThis.rightArray = rightArray;
 
         editNotes.value = rightElement.notes;
         editPriority.value = rightElement.priority;
@@ -122,6 +123,26 @@ function addObjectToDom(element, rightArrayMaybe){
         const editPriority = document.querySelector("#editPriority");
         const editNotes = document.querySelector("#editNotes");
         editToDo(rightElement, editTitle.value, editDescription.value, editDuedate.value, editPriority.value, editNotes.value);
+        //
+        const todoOnScreen = document.querySelector(".todo");
+        if (todoOnScreen){
+                const getTodoListName = todoOnScreen.dataset.todolistname;
+                const arrayOnscreen = arrayStorage.map((element) => element[0]).indexOf(getTodoListName);
+          
+                if (rightArray == arrayOnscreen) {
+                    const allToDos = document.querySelectorAll(".todo");
+                    allToDos.forEach(element => {
+                        element.remove();
+                    });
+                    arrayStorage[rightArray].forEach(element => {
+                        if (element.title){
+                        addObjectToDom(element, arrayStorage[rightArray]);
+                    } else {
+                        console.log("test");
+                    }
+                    });
+                }
+            }
         return;
     })
     globalThis.rightArrayMaybe = rightArrayMaybe;

@@ -1,7 +1,7 @@
 import {createToDo, addToList} from "./toDoObject";
 import {createList} from "./createList";
 import  "./style.css";
-import {addListToDom} from "./addToDom";
+import {addListToDom, addObjectToDom} from "./addToDom";
 
 const arrayStorage = [];
 const defaultList = ["Default list"];
@@ -49,6 +49,27 @@ confirmButton.addEventListener("click", ()=> {
     const todo = createToDo(title.value, description.value, duedate.value, priority.value, notes.value);
     const rightList = arrayStorage.map((element) => element[0]).indexOf(chosenList.value);
     addToList(todo, arrayStorage[rightList]);
+    const todoOnScreen = document.querySelector(".todo");
+  
+    if (todoOnScreen){
+        const getTodoListName = todoOnScreen.dataset.todolistname;
+        const arrayOnscreen = arrayStorage.map((element) => element[0]).indexOf(getTodoListName);
+  
+        if (rightList == arrayOnscreen) {
+            const allToDos = document.querySelectorAll(".todo");
+            allToDos.forEach(element => {
+                element.remove();
+            });
+            arrayStorage[rightList].forEach(element => {
+                if (element.title){
+                addObjectToDom(element, arrayStorage[rightList]);
+            } else {
+                console.log("test");
+            }
+            });
+        }
+    }
+    
     title.value = "";
     description.value = "";
     duedate.value = "";
