@@ -20,37 +20,29 @@ function addListToDom(list){
     deleteMarker.dataset.listname = listName;
     deleteMarker.dataset.eventlistener = "true";
 
-    // delete list from arraystorage
-    const button = document.querySelectorAll("[data-listname]");
-    // lastbutton is not the last text of the listname but the P element that has the X
-    const lastButton = button[button.length-1];
-    lastButton.addEventListener("click", () => {
-        const listToDelete = lastButton.dataset.listname;
-        lastButton.parentNode.remove();
-        const rightArray = arrayStorage.map((element) => element[0]).indexOf(listToDelete);
-        const checkForTodos = arrayStorage[rightArray][1];
-        const check = document.querySelector(`[data-uuid = "${checkForTodos}"]`);
-        if (check){
-            const allToDos = document.querySelectorAll(".todo");
-            allToDos.forEach(element => {
-                element.remove()
-            });
-        }
-        arrayStorage.splice(rightArray,1);
+    // delete TODO list 
+    const button = document.querySelectorAll("[data-listname]"); // Get reference to all lists 
+    // Get reference to the list that is being clicked
+    const deleteListButton = button[button.length-1];
+    deleteListButton.addEventListener("click", () => {
+        localStorage.removeItem(list[0]);
+        // delete the todo list name from the DOM
+        deleteListButton.parentNode.remove();
         return;   
     })
 
+    // Show todos when the name of the todo list is clicked
     const listTextButton = document.querySelectorAll(".listname");
-    const lastListTextButton = listTextButton[listTextButton.length-1];
-    lastListTextButton.addEventListener("click", ()=> {
+    const toDoListButton = listTextButton[listTextButton.length-1];
+    toDoListButton.addEventListener("click", ()=> {
         const todos = document.querySelectorAll(".todo");
         todos.forEach(element => {
             element.remove();
         });
-        const rightArray = arrayStorage.map((element) => element[0]).indexOf(lastListTextButton.textContent);
-        arrayStorage[rightArray].forEach(element => {
+        const toDoListLocalstorage = JSON.parse(localStorage.getItem(list[0]));
+        toDoListLocalstorage.forEach(element => {
             if (element.title){
-                addObjectToDom(element, arrayStorage[rightArray]);
+                addObjectToDom(element, list);
             } else {
                 return;
             }
@@ -59,11 +51,19 @@ function addListToDom(list){
     return
 }
 
-function addObjectToDom(element, rightArrayMaybe){
+function addObjectToDom(element, list){
+    const editButton = document.createElement("p");
+    editButton.textContent = "Edit";
+    const deleteButton = document.createElement("p");
+    deleteButton.textContent = "X";
+    deleteButton.classList.add("delete");
     const content = document.querySelector(".content");
     const div = document.createElement("div");
+    div.classList.add("todo");
     const todo = document.createElement("p");
     todo.textContent = `${element.title}, ${element.duedate}`;
+
+    // Show todo details
     todo.addEventListener("click", ()=> {
         const showToDoDialog = document.querySelector("#showToDo");
         const showTitle = document.querySelector("#showTitle");
@@ -78,78 +78,92 @@ function addObjectToDom(element, rightArrayMaybe){
         showDescription.textContent = element.description;
         showToDoDialog.show();
     })
-    const editButton = document.createElement("p");
-    editButton.textContent = "Edit";
-    const deleteButton = document.createElement("p");
-    deleteButton.textContent = "X";
-    div.classList.add("todo");
-    deleteButton.classList.add("delete");
-    deleteButton.addEventListener("click", ()=> {
-        deleteToDo(element, rightArrayMaybe);
+
+    // Delete todo button
+    deleteButton.addEventListener("click", ()=> { 
         const parent = deleteButton.parentNode;
-        parent.remove();
+        const toDoListLocalstorage = JSON.parse(localStorage.getItem(list[0]));
+        function findTodoIndex(element){
+            if (parent.dataset.uuid){
+                if (element.uuid == parent.dataset.uuid){
+                return true;
+            } 
+            } else {
+                return false;
+            }
+        }
+        const todoIndex = toDoListLocalstorage.findIndex(findTodoIndex);
+        toDoListLocalstorage.splice(todoIndex, 1);
+        localStorage.setItem(list[0], JSON.stringify(toDoListLocalstorage));
+        parent.remove();   
     })
 
     const editToDoDialog = document.querySelector("#editToDo");
+
+    // edit button here is dynamically created using document.create
+    // so it works correctly on each individual element
     editButton.addEventListener("click", ()=> {
         const editTitle = document.querySelector("#editTitle");
         const editDescription = document.querySelector("#editDescription");
         const editDuedate = document.querySelector("#editDuedate");
         const editPriority = document.querySelector("#editPriority");
         const editNotes = document.querySelector("#editNotes");
+        editNotes.value = element.notes;
+        editPriority.value = element.priority;
+        editDuedate.value = element.duedate;
+        editDescription.value = element.description;
+        editTitle.value = element.title;
 
         const parent = editButton.parentNode;
         const uuid = parent.dataset.uuid;
+        globalThis.uuid = uuid;
         const listNameToDo = parent.dataset.todolistname;
 
-        const rightArray = arrayStorage.map((element) => element[0]).indexOf(listNameToDo);
-        const rightElement = arrayStorage[rightArray].find((e)=> e.uuid == uuid);
-        globalThis.rightElement = rightElement;
-        globalThis.rightArray = rightArray;
+        const toDoListLocalstorage = JSON.parse(localStorage.getItem(list[0]));
+        const rightElement = toDoListLocalstorage.find((e)=> e.uuid == uuid);
 
-        editNotes.value = rightElement.notes;
-        editPriority.value = rightElement.priority;
-        editDuedate.value = rightElement.duedate;
-        editDescription.value = rightElement.description;
-        editTitle.value = rightElement.title;
+        globalThis.rightElement = rightElement;
+
         editToDoDialog.show();
     })
 
+    // here confirmedit is not dynamically created there is one button on the screen and 
+    // when that is clicked it executes on each element that has it.
     const confirmEdit = document.querySelector("#editConfirm");
     confirmEdit.addEventListener("click", ()=> {
+        // it works as long as every thing is filled in in the todo item
         const editTitle = document.querySelector("#editTitle");
         const editDescription = document.querySelector("#editDescription");
         const editDuedate = document.querySelector("#editDuedate");
         const editPriority = document.querySelector("#editPriority");
         const editNotes = document.querySelector("#editNotes");
-        editToDo(rightElement, editTitle.value, editDescription.value, editDuedate.value, editPriority.value, editNotes.value);
-        //
-        const todoOnScreen = document.querySelector(".todo");
-        if (todoOnScreen){
-                const getTodoListName = todoOnScreen.dataset.todolistname;
-                const arrayOnscreen = arrayStorage.map((element) => element[0]).indexOf(getTodoListName);
-          
-                if (rightArray == arrayOnscreen) {
-                    const allToDos = document.querySelectorAll(".todo");
-                    allToDos.forEach(element => {
-                        element.remove();
-                    });
-                    arrayStorage[rightArray].forEach(element => {
-                        if (element.title){
-                        addObjectToDom(element, arrayStorage[rightArray]);
-                    } else {
-                        console.log("test");
-                    }
-                    });
-                }
+
+        const toDoListLocalstorage = JSON.parse(localStorage.getItem(list[0]));
+        function findTodoIndex(element){
+            if (uuid){
+                if (element.uuid == uuid){
+                return true;
+            } 
+            } else {
+                return false;
             }
+        }
+        const todoIndex = toDoListLocalstorage.findIndex(findTodoIndex);
+        const elementToEdit = toDoListLocalstorage[todoIndex];
+
+        elementToEdit.title = editTitle.value;
+        elementToEdit.description = editDescription.value;
+        elementToEdit.duedate = editDuedate.value;
+        elementToEdit.priority = editPriority.value;
+        elementToEdit.notes = editNotes.value;
+
+        localStorage.setItem(list[0], JSON.stringify(toDoListLocalstorage));  
         return;
     })
-    globalThis.rightArrayMaybe = rightArrayMaybe;
-    globalThis.element = element;
+
     div.append(todo, editButton, deleteButton);
     div.dataset.uuid = element.uuid;
-    div.dataset.todolistname = rightArrayMaybe[0];
+  
     content.appendChild(div);
     return
 }

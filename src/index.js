@@ -3,73 +3,68 @@ import {createList} from "./createList";
 import  "./style.css";
 import {addListToDom, addObjectToDom} from "./addToDom";
 
-const arrayStorage = [];
-const defaultList = ["Default list"];
-globalThis.arrayStorage = arrayStorage;
-globalThis.defaultList = defaultList;
-addListToDom(defaultList);
-arrayStorage.push(defaultList);
-
 const createListButton = document.querySelector("#createlist");
 const toDoListDialog = document.querySelector("#toDoListDialog");
-
-// https://gomakethings.com/an-intro-to-the-dialog-element/
-
-createListButton.addEventListener("click", () => {
-    toDoListDialog.show();
-    return
-})
-
 const createToDoButton = document.querySelector(".createToDo");
 const toDoDialog = document.querySelector("#createToDo");
-
-createToDoButton.addEventListener("click", ()=> {
-    const lists = document.querySelector("#lists");
-    while (lists.firstChild){
-        lists.removeChild(lists.firstChild);
-    }
-    arrayStorage.forEach(element => {
-    const option = document.createElement("option");
-    option.textContent = element[0];
-    option.setAttribute("value", element[0]);
-    lists.append(option);
-    });
-    toDoDialog.show();
-})
-
 const priority = document.querySelector("#priority");
 const title = document.querySelector("#title");
 const description = document.querySelector("#description");
 const notes = document.querySelector("#notes");
 const duedate = document.querySelector("#duedate");
 const chosenList = document.querySelector("#lists");
-
 const confirmButton = document.querySelector("#confirm");
-confirmButton.addEventListener("click", ()=> {
-    const todo = createToDo(title.value, description.value, duedate.value, priority.value, notes.value);
-    const rightList = arrayStorage.map((element) => element[0]).indexOf(chosenList.value);
-    addToList(todo, arrayStorage[rightList]);
-    const todoOnScreen = document.querySelector(".todo");
-  
-    if (todoOnScreen){
-        const getTodoListName = todoOnScreen.dataset.todolistname;
-        const arrayOnscreen = arrayStorage.map((element) => element[0]).indexOf(getTodoListName);
-  
-        if (rightList == arrayOnscreen) {
-            const allToDos = document.querySelectorAll(".todo");
-            allToDos.forEach(element => {
-                element.remove();
-            });
-            arrayStorage[rightList].forEach(element => {
-                if (element.title){
-                addObjectToDom(element, arrayStorage[rightList]);
-            } else {
-                console.log("test");
-            }
-            });
+const storageLength = localStorage.length;
+
+for (let i = 0; i < storageLength; i++){
+    const key = localStorage.key(i);
+    const list = JSON.parse(localStorage.getItem(key));
+    addListToDom(list);
+}
+
+createListButton.addEventListener("click", () => {
+    toDoListDialog.show();
+    return
+})
+
+toDoListDialog.addEventListener("close", ()=> {
+    if (toDoListDialog.returnValue === "cancel"){
+        return;
+    } else {
+        const name = toDoListDialog.returnValue;
+        const listNameDialog = document.querySelector("#listname");
+        if (localStorage.getItem(name) == null){
+            createList(name);
+            listNameDialog.value = "";
+            console.log("Succes, list doesnt exist in localstorage");
+        } else {
+            console.log("Error, list already exists in localstorage");
         }
     }
-    
+})
+
+createToDoButton.addEventListener("click", ()=> {
+    const todoListOptions = document.querySelector("#lists");
+    while (todoListOptions.firstChild){
+        todoListOptions.removeChild(todoListOptions.firstChild);
+    }
+    const storageLength = localStorage.length;
+    for (let i=0; i < storageLength; i++){
+        const option = document.createElement("option");
+        const key = localStorage.key(i);
+        option.textContent = key;
+        option.setAttribute("value", key);
+        todoListOptions.append(option);
+    }
+    toDoDialog.show();
+})
+
+confirmButton.addEventListener("click", ()=> {
+    const todo = createToDo(title.value, description.value, duedate.value, priority.value, notes.value);
+    const list = JSON.parse(localStorage.getItem(chosenList.value));
+    list.push(todo);
+    localStorage.setItem(chosenList.value, JSON.stringify(list));
+
     title.value = "";
     description.value = "";
     duedate.value = "";
@@ -78,20 +73,6 @@ confirmButton.addEventListener("click", ()=> {
     toDoDialog.close();
 })
 
-toDoListDialog.addEventListener("close", function (event){
-    if (toDoListDialog.returnValue === "cancel"){
-        return;
-    } else {
-        const name = toDoListDialog.returnValue;
-        const checkDuplicateName = arrayStorage.map((element) => element[0]).indexOf(name);
-        if (checkDuplicateName === -1) {
-            createList(name);
-            const listNameDialog = document.querySelector("#listname");
-            listNameDialog.value = "";
-        } else {
-            console.log("duplicate name not allowed");
-        }
-    }
-})
+
 
 
