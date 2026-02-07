@@ -151,11 +151,17 @@ function addObjectToDom(element, list){
         const todoIndex = toDoListLocalstorage.findIndex(findTodoIndex);
         const elementToEdit = toDoListLocalstorage[todoIndex];
 
-        elementToEdit.title = editTitle.value;
-        elementToEdit.description = editDescription.value;
-        elementToEdit.duedate = editDuedate.value;
-        elementToEdit.priority = editPriority.value;
-        elementToEdit.notes = editNotes.value;
+        if (elementToEdit.title){
+            elementToEdit.title = editTitle.value;
+        } if (elementToEdit.description){
+            elementToEdit.description = editDescription.value;
+        } if (elementToEdit.duedate){
+            elementToEdit.duedate = editDuedate.value;
+        } if (elementToEdit.priority){
+            elementToEdit.priority = editPriority.value;
+        } if (elementToEdit.notes){
+            elementToEdit.notes = editNotes.value;
+        }
 
         localStorage.setItem(list[0], JSON.stringify(toDoListLocalstorage));  
         return;
