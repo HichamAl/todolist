@@ -7,11 +7,17 @@ body {
 
 .nav {
     height: 100vh;
-    background-color: antiquewhite;
+    background-color: #0A0A0A;
     flex-grow: 1;
     display: flex;
     align-items: center;
     flex-direction: column;
+    padding-top: 1rem;
+    color: white;
+}
+
+.nav h1 {
+    padding-bottom: 2rem;
 }
 
 .content {
@@ -21,6 +27,14 @@ body {
     display: flex;
     justify-content: flex-start;
     flex-direction: column;
+    padding-top: 1rem;
+    padding-left: 2rem;
+    background-color: #F1F1F1;
+    color: black;
+}
+
+.container {
+    padding-bottom: 2rem;
 }
 
 h1 {
@@ -30,7 +44,7 @@ h1 {
 .todo {
     height: 50px;
     width: 500px;
-    background-color: aqua;
+    background-color: #FFFFFF;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -38,16 +52,151 @@ h1 {
     margin-bottom: 1rem;
 }
 
-#createlist {
-    background-color:greenyellow;
-    padding: 0.5rem;
-    border-radius: 1rem;
+/* ===== Dialog trigger buttons ===== */
+#createlist,
+.createToDo {
+  margin-bottom: 2rem;
+  width: 200px;
+  height: 32px;
+
+  background: #4f46e5;
+  color: #fff;
+
+  border: none;
+  border-radius: 0.4rem;
+
+  font-size: 0.9rem;
+  font-weight: 500;
+
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.1s ease;
 }
 
-#createlist:hover {
-    filter: brightness(75%);
+/* Hover */
+#createlist:hover,
+.createToDo:hover {
+  background: #4338ca;
 }
+
+/* Active click */
+#createlist:active,
+.createToDo:active {
+  transform: scale(0.98);
+}
+
+/* Keyboard focus */
+#createlist:focus-visible,
+.createToDo:focus-visible {
+  outline: 2px solid #c7d2fe;
+  outline-offset: 2px;
+}
+
 
 .todo > * {
     margin: 1rem;
+}
+
+/* ===== Base dialog styling ===== */
+dialog[open] {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+
+  padding: 1.5rem;
+  background: #fff;
+
+  border: none;
+  border-radius: 0.75rem;
+
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+}
+
+/* ===== Dialog widths ===== */
+#createToDo[open],
+#toDoListDialog[open],
+#editToDo[open],
+#showToDo[open] {
+  width: 400px;
+  max-width: 90vw;
+}
+
+/* ===== Backdrop ===== */
+dialog::backdrop {
+  background: rgba(0, 0, 0, 0.55);
+}
+
+/* ===== Forms ===== */
+dialog form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+/* ===== Labels ===== */
+dialog label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #444;
+}
+
+/* ===== Inputs ===== */
+dialog input,
+dialog select,
+dialog textarea {
+  padding: 0.5rem 0.6rem;
+  font-size: 0.9rem;
+
+  border-radius: 0.4rem;
+  border: 1px solid #ccc;
+}
+
+dialog textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+dialog input:focus,
+dialog select:focus,
+dialog textarea:focus {
+  outline: none;
+  border-color: #4f46e5;
+}
+
+/* ===== Buttons ===== */
+dialog button {
+  margin-top: 0.5rem;
+  padding: 0.5rem 0.75rem;
+
+  border-radius: 0.4rem;
+  border: none;
+
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+dialog button[value="cancel"],
+dialog button[value="editCancel"] {
+  background: #e5e7eb;
+  color: #111;
+}
+
+dialog button[value="confirm"],
+dialog button[value="editConfirm"] {
+  background: #4f46e5;
+  color: #fff;
+}
+
+dialog button:hover {
+  opacity: 0.9;
+}
+
+/* ===== Read-only dialog content ===== */
+#showToDo p {
+  margin: 0 0 0.5rem;
+  padding: 0.4rem 0.6rem;
+
+  background: #f3f4f6;
+  border-radius: 0.4rem;
+
+  font-size: 0.9rem;
 }

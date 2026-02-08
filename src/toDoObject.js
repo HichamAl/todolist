@@ -10,6 +10,7 @@ globalThis.createToDo = createToDo;
 
 function addToList(todo, listName){
     listName.push(todo);
+    localStorage.setItem(listName, JSON.stringify(listName));
     return
 }
 
