@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>To do project</title>
+<script defer src="main.js"></script></head>
+<body>
+
+    <div class="nav">
+        <h1>To Do List App</h1>
+
+        <button id="createlist">Create new list</button>
+
+        <button class="createToDo">Create new todo</button>
+
+        <dialog closedby="any" id="createToDo">
+            <form method="dialog">
+                <label for="title">Title</label>
+                <input type="text" id="title" name="title" >
+                <label for="description">Description</label>
+                <input type="text" id="description" name="description">
+
+                <label for="priority">Priority</label>
+                <select name="priority" id="priority">
+                    <option value="High">High</option>
+                    <option value="Medium">Medium</option>
+                    <option value="Low">Low</option>
+                </select>
+               
+                <label for="duedate">Duedate</label>
+                <input type="date" id="duedate" name="duedate">
+
+                <label for="notes">Notes</label>
+                <textarea name="notes" id="notes"></textarea>
+
+                <label for="addToList">To Do List</label>
+                <select name="lists" id="lists">
+                </select>
+
+                <button value="cancel">Cancel</button>
+                <button id="confirm" value="confirm">Submit</button>
+            </form>
+        </dialog>
+
+        <dialog closedby="any" id="toDoListDialog">
+            <form method="dialog">
+                <label for="listname">What name do you want for your todo list?</label>
+                <input type="text" id="listname" name="listname" >
+                <button value="cancel">Cancel</button>
+                <button id="listConfirm" value="confirm">Submit</button>
+            </form>
+        </dialog>
+        
+    </div>
+
+    <div class="content">
+        <div class="container"></div>
+
+        <dialog closedby="any" id="showToDo">
+            <label for="showTitle">Title:</label>
+            <p id="showTitle"></p>
+
+            <label for="showDescription">Description:</label>
+            <p id="showDescription"></p>
+
+            <label for="showDueDate">Due date:</label>
+            <p id="showDueDate"></p>
+
+            <label for="showPriority">Priority:</label>
+            <p id="showPriority"></p>
+
+            <label for="showNotes">Notes:</label>
+            <p id="showNotes"></p>            
+        </dialog>
+    </div>
+
+    <dialog closedby="any" id="editToDo">
+            <form method="dialog">
+                <label for="editTitle">Title</label>
+                <input type="text" id="editTitle" name="editTitle" >
+                <label for="editDescription">Description</label>
+                <input type="text" id="editDescription" name="editDescription">
+
+                <label for="editPriority">Priority</label>
+                <select name="editPriority" id="editPriority">
+                    <option value="High">High</option>
+                    <option value="Medium">Medium</option>
+                    <option value="Low">Low</option>
+                </select>
+               
+                <label for="editDuedate">Duedate</label>
+                <input type="date" id="editDuedate" name="editDuedate">
+
+                <label for="editNotes">Notes</label>
+                <textarea name="editNotes" id="editNotes"></textarea>
+
+                <button value="editCancel">Cancel</button>
+                <button id="editConfirm" value="editConfirm">Submit</button>
+            </form>
+        </dialog>
+
+</body>
+</html>
